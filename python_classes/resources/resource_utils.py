@@ -13,7 +13,11 @@ class ResourceUtils:
         group = bpy.data.node_groups.get(name, None)
 
         if group is None:
-            directory = os.path.join(cls.geo_nodes_dir, "geo_nodes_2_93.blend", "NodeTree")
+            if bpy.app.version < (3, 2, 0):
+                directory = os.path.join(cls.geo_nodes_dir, "geo_nodes_2_93.blend", "NodeTree")
+            else:
+                directory = os.path.join(cls.geo_nodes_dir, "geo_nodes_3_2.blend", "NodeTree")
+
             filepath = os.path.join(directory, name)
             bpy.ops.wm.append(filepath=filepath,filename=name,directory=directory, autoselect=False)
             group = bpy.data.node_groups[name]

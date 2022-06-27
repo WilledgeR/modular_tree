@@ -13,7 +13,7 @@ VERSION_FILEPATH = os.path.join(Path(__file__).parent.parent.parent, "VERSION")
 
 def setup_addon_directory():
     plateform_name = "windows" if platform.system() == "Windows" else "linux" if platform.system() == "Linux" else "macOS"
-    version = read_version()
+    version = read_version().rstrip('\n')
     addon_dirpath = os.path.join(TMP_DIRPATH, f"modular_tree_{version}_{plateform_name}")
     root = os.path.join(addon_dirpath, "modular_tree")
     Path(root).mkdir(exist_ok=True, parents=True)
