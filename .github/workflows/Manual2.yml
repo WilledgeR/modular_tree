@@ -1,0 +1,94 @@
+name: test_github_actions_manual
+on: [workflow_dispatch]
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            extension: bat
+            name: windows
+          - os: ubuntu-latest
+            extension: sh
+            name: linux
+          - os: macos-latest
+            extension: osx
+            name: macOS
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: build
+        run: ./build_mtree.${{ matrix.extension }}
+      - name: package addon
+        run: python .github/scripts/setup_addon.py
+      - name: upload zipped addon
+        uses: actions/upload-artifact@v3
+        with:
+          name: modular_tree_${{ matrix.name }}
+          path: tmp/*.zip
+  
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      STATUS: ${{ !endsWith(github.ref, 'master') && 'alpha' || '' }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Get version
+        id: vars
+        run: echo ::set-output name=version::$(cat VERSION)
+      
+      # Create release
+      - name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.vars.outputs.version }}${{ env.STATUS }}
+          release_name: Release V${{ steps.vars.outputs.version }}${{ env.STATUS }}
+          draft: false
+          prerelease: false
+      
+      # Upload assets to release
+      - name: Upload assets to release - Windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url}}
+          asset_path: ./modular_tree_windows/modular_tree_${{ steps.vars.outputs.version }}_windows.zip
+          asset_name: modular_tree_${{ steps.vars.outputs.version }}_windows.zip
+          asset_content_type: application/zip
+      
+      - name: Upload assets to release - Linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url}}
+          asset_path: ./modular_tree_linux/modular_tree_${{ steps.vars.outputs.version }}_linux.zip
+          asset_name: modular_tree_${{ steps.vars.outputs.version }}_linux.zip
+          asset_content_type: application/zip
+      
+      - name: Upload assets to release - OSX
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url}}
+          asset_path: ./modular_tree_macOS/modular_tree_${{ steps.vars.outputs.version }}_macOS.zip
+          asset_name: modular_tree_${{ steps.vars.outputs.version }}_macOS.zip
+          asset_content_type: application/zip
