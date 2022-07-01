@@ -68,7 +68,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url}}
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./modular_tree_windows/modular_tree_${{ steps.vars.outputs.version }}_windows.zip
           asset_name: modular_tree_${{ steps.vars.outputs.version }}_windows.zip
           asset_content_type: application/zip
@@ -78,7 +78,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url}}
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./modular_tree_linux/modular_tree_${{ steps.vars.outputs.version }}_linux.zip
           asset_name: modular_tree_${{ steps.vars.outputs.version }}_linux.zip
           asset_content_type: application/zip
@@ -88,7 +88,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url}}
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./modular_tree_macOS/modular_tree_${{ steps.vars.outputs.version }}_macOS.zip
           asset_name: modular_tree_${{ steps.vars.outputs.version }}_macOS.zip
           asset_content_type: application/zip
