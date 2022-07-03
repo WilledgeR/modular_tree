@@ -40,7 +40,7 @@ def install_vcpkg_dependencies():
         elif platform.system() == "Linux":
             triplet = ":x64-linux"
         else:
-            triplet = ":arm64-osx"
+            triplet = ":x64-osx"
         subprocess.check_call([os.path.join(VCPKG_PATH, "vcpkg"), "install", package+triplet])
 
 def build():
