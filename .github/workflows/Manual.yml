@@ -1,4 +1,4 @@
-name: test_github_actions_manual2
+name: test_github_actions_manual
 on: [workflow_dispatch]
 jobs:
   build:
