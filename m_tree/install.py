@@ -40,7 +40,7 @@ def install_vcpkg_dependencies():
         elif platform.system() == "Linux":
             triplet = ":x64-linux"
         else:
-            triplet = ":x64-osx"
+            triplet = ":arm64-osx"
         subprocess.check_call([os.path.join(VCPKG_PATH, "vcpkg"), "install", package+triplet])
 
 def build():
@@ -48,7 +48,7 @@ def build():
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
 
-    subprocess.check_call(['cmake', "../", "-DPYBIND11_PYTHON_VERSION=3.10"], cwd=build_dir)
+    subprocess.check_call(['cmake', "../", "-DPYBIND11_PYTHON_VERSION=3.10", "-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'"], cwd=build_dir)
     subprocess.check_call(['cmake', '--build', '.', "--config", "Release"], cwd=build_dir)
 
     print([i for i in os.listdir(os.path.join(os.path.dirname(__file__), "binaries"))])
