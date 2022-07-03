@@ -90,5 +90,5 @@ jobs:
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./modular_tree_macOS/modular_tree_${{ steps.vars.outputs.version }}_macOS.zip
-          asset_name: modular_tree_${{ steps.vars.outputs.version }}_macOS.zip
+          asset_name: modular_tree_${{ steps.vars.outputs.version }}_macOS_universal.zip
           asset_content_type: application/zip
